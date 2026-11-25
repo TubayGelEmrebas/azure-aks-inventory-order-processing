@@ -1,17 +1,14 @@
-# azure-aks-inventory-order-processing
-An 8-week Azure and AKS inventory and order processing prototype
-
 # Azure AKS Inventory & Order Processing Challenge
 
-An eight-week engineering challenge to design and build a prototype for inventory updates and order processing in a fictional large-scale retail scenario.
+An eight-week solo engineering project to design and build an Azure prototype for inventory updates and order processing in a fictional retail scenario.
 
-**This is a working prototype, not a production-ready system.** All project data will be synthetic.
+**This is a working prototype, not a production-ready system.** All project data will be synthetic. The design and implementation are my own work; external references will be credited in this repository.
 
 ## The challenge
 
-Stores, warehouses, and online shops send inventory updates that can arrive late or more than once. When multiple customers try to order the last available item at the same time, the system must prevent overselling and keep stock records accurate.
+Stores, warehouses, and online shops send inventory updates that may arrive late or more than once. When several customers try to order the last available item at the same time, the system must prevent overselling and keep stock records accurate.
 
-This project explores how to handle those challenges through architecture design, implementation, and failure testing on Azure.
+This project explores how to handle these challenges through architecture design, implementation, and failure testing on Azure.
 
 ## Project goals
 
@@ -20,8 +17,9 @@ This project explores how to handle those challenges through architecture design
 - Provision Azure infrastructure with Terraform.
 - Scale event consumers based on backlog and application services based on resource usage.
 - Monitor service health, processing delays, errors, and stock exceptions.
-- Test how the prototype responds to and recovers from failures.
-- Document design choices, test results, and estimated Azure costs.
+- Test how the prototype responds to failures and document recovery results.
+- Document architecture decisions, test results, migration considerations, and estimated Azure costs.
+- Explore an AI-assisted feature that summarizes stock exceptions and suggests investigation steps.
 
 ## Planned architecture
 
@@ -29,30 +27,31 @@ The prototype is planned to use:
 
 - **Azure Kubernetes Service (AKS)** to run application services and event consumers.
 - **Azure Event Hubs** to receive inventory and order events.
-- **Azure SQL** to store inventory and reservation data.
+- **An application-managed quarantine flow** to store messages that repeatedly fail processing. Event Hubs does not provide a native dead-letter queue.
+- **Azure SQL** to store inventory, orders, and reservation data.
 - **Azure Container Registry (ACR)** to store container images.
-- **KEDA** to scale event consumers based on Event Hubs backlog.
+- **KEDA** to scale event consumers based on the Event Hubs backlog.
 - **HPA** to scale application services based on resource usage.
 - **Azure Monitor, Managed Prometheus, and Grafana** for observability.
-- **Key Vault, Workload Identity, OIDC, RBAC, and NetworkPolicy** for security.
+- **Key Vault, Workload Identity, OIDC, RBAC, and NetworkPolicy** for secrets management, identity, access control, and network traffic rules.
 
-Architecture decisions will be documented as Architecture Decision Records (ADRs).
+Microsoft’s Cloud Adoption Framework and Well-Architected Framework will inform the design. Architecture decisions will be documented as Architecture Decision Records (ADRs).
 
 ## Infrastructure and CI/CD
 
 Terraform will define the Azure network, AKS, and ACR.
 
-GitHub Actions is planned to run checks and create Terraform plans for pull requests. Infrastructure changes will be applied only after approval.
+GitHub Actions is planned to run checks and create Terraform plans for pull requests. Infrastructure changes will be applied only after approval. Helm will be used to package and deploy the application to AKS.
 
 ## Failure testing and AI-assisted review
 
-The prototype will simulate delayed and duplicate events, repeated message failures, and service interruptions.
+The prototype will simulate delayed and duplicate events, repeated message failures, and service interruptions. Results and recovery behavior will be documented.
 
-An AI-assisted feature will summarize stock exceptions, suggest possible causes, and recommend investigation steps. Operational decisions will remain with the operations team.
+An AI-assisted feature will summarize stock exceptions, highlight patterns, and suggest possible causes or investigation steps. I will review its output; it will not make operational decisions or take automated actions.
 
 ## Eight-week plan
 
-The plan will be refined as the project progresses.
+The plan may change as the project progresses.
 
 1. Define requirements, architecture, and initial ADRs.
 2. Create the application and event-processing prototype.
@@ -65,15 +64,19 @@ The plan will be refined as the project progresses.
 
 ## Repository contents
 
-This repository will include source code, Terraform configuration, architecture diagrams, ADRs, test results, and project notes as they are created.
+This repository will include source code, Terraform configuration, architecture diagrams, ADRs, test results, project notes, and references as they are created.
 
 ## Progress updates
 
-Progress updates are planned for every Wednesday and will cover completed work, challenges, decisions, and next steps.
+I plan to share progress every Wednesday, covering completed work, challenges, decisions, and next steps.
 
 ## Data and security
 
 All project data is synthetic. Do not commit passwords, access tokens, private keys, or other secrets to this repository.
+
+## References
+
+External documentation, tools, and other references used during the project will be listed here or linked from the relevant project documents.
 
 ## Status
 
